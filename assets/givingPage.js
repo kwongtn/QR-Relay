@@ -2,7 +2,6 @@ var socket = io.connect("https://qr-cottendance-265413.appspot.com/");
 var sessionID = 0;
 var keyExists = false;
 
-
 document.getElementById("jsCheck").style.display = "none";
 
 // Get session ID from server.
@@ -17,16 +16,8 @@ socket.on("message", (message) => {
     console.log(message, sessionID);
 });
 
-socket.on("codeResponse", (session) => {
-    if (session.sessionID == sessionID) {
-        document.getElementById("qrcode").style.display = "block";
-        document.getElementById("qrerror").style.display = "none";
-        console.log(session.sessionKey);
-        qrcode.makeCode(session.sessionKey)
-    } else {
-        document.getElementById("qrcode").style.display = "none";
-        document.getElementById("qrerror").style.display = "block";
-    }
+socket.on("keyResponse", (response) => {
+    document.getElementById("sentCode").innerHTML = response;
 });
 
 socket.on("codeVerification", (exists) => {
@@ -43,14 +34,9 @@ socket.on("codeVerification", (exists) => {
 
 // Sends provided key to server.
 function sendKey() {
-    if(!keyExists) {
-        console.log("Key does not exist.");
-        socket.emit("codeSubmit", { ID: sessionID, key: document.getElementById("sendingKey").value.toString() });
-        console.log(document.getElementById("sendingKey").value.toString());
-    } else {
-        console.log("Key exists.");
-        document.getElementById("keyExist").innerHTML = "ID exists. Please choose another ID before proceeding.";
-    }
+    socket.emit("codeSubmit", { ID: sessionID, key: document.getElementById("sendingKey").value.toString() });
+    document.getElementById("sentCode").innerHTML = document.getElementById("sendingKey").value;
+    console.log(document.getElementById("sendingKey").value.toString());
 }
 
 function querySession() {

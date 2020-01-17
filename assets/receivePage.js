@@ -23,6 +23,7 @@ socket.on("codeResponse", (session) => {
             try {
                 qrcode.makeCode(session.sessionKey);
                 document.getElementById("receivedCode").innerHTML = session.sessionKey;
+                document.getElementById("receivedTime").innerHTML = new Date();
             } catch (err) {
                 document.getElementById("qrcode").style.display = "none";
                 document.getElementById("qrerror").style.display = "block";

@@ -6,19 +6,22 @@
 </head>
 
 <body>
-    <h1>QR-Cottendance : The Receiving End</h1>
+    <h1>QR-Cottendance : The Receiving End</h1><br>
+    <hr>
     <p id="jsCheck">For this to work correctly, please enable javascript in your browser.</p>
-    <div id="testConnection">You are not connected. Probably something is wrong with your connection.</div>
     <div id="sessionID"></div>
+    <div id="testConnection">You are not connected. Probably something is wrong with your connection.</div><br>
     <b>Received code: </b><span id="receivedCode"></span><br>
+    <b>Last received: </b><span id="receivedTime"></span><br>
     
     <input type="text" placeholder="Enter sessionID" id="sessionInput" onchange=querySession() />
     <input type="button" value="Poke server" id="poke" onclick=pokeFunction() />
     <div id="test"></div>
 
+    <hr>
     <p>QR Code is as follows:</p>
-    <p id="qrerror" style="display: none">SessionID invalid.</p>
-    <div id="qrcode" style="text-align:center"></div>
+    <p id="qrerror" style="display: none">SessionID invalid, or the other person has not sent the keys.</p>
+    <p id="qrcode" style="text-align:center" style="width:100%"></p>
 
     <p><a href="./">Go back to selection page.</a></p>
 

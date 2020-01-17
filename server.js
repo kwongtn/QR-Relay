@@ -85,6 +85,7 @@ io.sockets.on('connection', (socket) => {
     socket.on("codeSubmit", (submission) => {
         sessionKeys[submission.ID.toString()] = submission.key.toString();
         socket.broadcast.emit("codeResponse", {sessionID: submission.ID.toString(), sessionKey: submission.key.toString() });
+        socket.emit("keyResponse", submission.key);
         console.log(submission);
         console.log(sessionKeys);
     });
