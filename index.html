@@ -13,7 +13,21 @@
     <input type="button" style="display:block; width:100%; padding: 5% 5%; font-size: 30px" value="The receiving end"
         onclick=redirectReceiving() />
 
+    <h2>Tutorial:</h2>
+    Assuming we have 2 parties, A and B. Where A is the giving party and B is the receiving party. <br>
+    Giving party means that the party that scans or streams the QR code.<br>
+    Receiving party means that the party that displays the QR code on another device.<br><br>
 
+    Tutorial as follows:
+    <ol>
+        <li>Person A goes to <a href="./giving">the giving end page</a> to capture the QR code.</li>
+        <li>On top of the page, if connection is established you will be given a sessionID. The sessionID is to be sent to the other party. Or you can key in your customID and give that instead.</li>
+        <li>You can key in a custom key to send, or scan from webcam. Just keep the camera pointed at the code so that any updates will be instantly transmitted.</li>
+        <li>Person B goes to <a href="./receive">the receiving end page</a> to obtain the QR code.</li>
+        <li>You then key in the sessionID to obtain the QR code.</li>
+    </ol>
+
+    
     <!-- Ad Entry -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3632544969292535" data-ad-slot="3379892870"

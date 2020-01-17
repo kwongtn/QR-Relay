@@ -15,7 +15,8 @@
     <b>Last received: </b><span id="receivedTime"></span><br>
     
     <input type="text" placeholder="Enter sessionID" id="sessionInput" onchange=querySession() />
-    <input type="button" value="Poke server" id="poke" onclick=pokeFunction() />
+    
+    <p><input type="button" value="Tap / Click here to test if you are still connected." id="poke" onclick=pokeFunction() /></p>
     <div id="test"></div>
 
     <hr>
@@ -24,6 +25,7 @@
     <p id="qrcode" style="text-align:center" style="width:100%"></p>
 
     <p><a href="./">Go back to selection page.</a></p>
+    <p><a href="./giving">Change role</a></p>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/assets/qrCodeJS/qrcode.js"></script>
