@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Socket.io Test</title>
+    <script type="text/javascript">
+
+    </script>
+</head>
+
+<body>
+    <h1>QR-Cottendance : The Giving End</h1>
+    <p id="jsCheck">For this to work correctly, please enable javascript in your browser.</p>
+    <div id="testConnection">You are not connected. Probably something is wrong with your connection.</div>
+    <div id="sessionID"></div>
+
+    <p>Enter sessionID, else a random id (shown above) will be used.<br>
+        <input type="text" placeholder="sessionID" id="sessionInput" onchange=querySession() /></p>
+    <div id="keyExist" style="display: none">ID exists. Please choose another ID.</div>
+
+    Enter here if you want to send a custom key:
+    <input type="text" placeholder="Key to send" id="sendingKey" onchange=sendKey() />
+
+    <p><input type="button" value="Tap / Click here to test if you are still connected." id="poke"
+            onclick=pokeFunction() /></p>
+    <div id="test"></div>
+
+    <hr>
+    <h1>Or, Scan from WebCam:</h1>
+    <div>
+        <b>Camera detected: </b>
+        <span id="cam-has-camera">true</span>
+        <br>
+        <video muted="" playsinline="" id="qr-video" width="100%"></video>
+    </div>
+    <div>
+        <b>Scanning type: </b>
+        <select id="inversion-mode-select">
+            <option value="both">Both original and inverted.</option>
+            <option value="original">Scan original (dark QR code on bright background)</option>
+            <option value="invert">Scan with inverted colors (bright QR code on dark background)</option>
+        </select>
+        <br>
+    </div>
+    <b>Detected QR code: </b>
+    <span id="cam-qr-result">None</span>
+    <br>
+    <b>Last detected at: </b>
+    <span id="cam-qr-result-timestamp"></span>
+    <hr>
+    <p><a href="./">Go back to selection page.</a></p>
+    <p><a href="./receive">Change role</a></p>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/assets/givingPage.js"></script>
+
+    <script type="module">
+        import QrScanner from "/assets/webQR/qr-scanner.min.js";
+        QrScanner.WORKER_PATH = '/assets/webQR/qr-scanner-worker.min.js';
+
+        const video = document.getElementById('qr-video');
+        const camHasCamera = document.getElementById('cam-has-camera');
+        const camQrResult = document.getElementById('cam-qr-result');
+        const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
+        const fileSelector = document.getElementById('file-selector');
+        const fileQrResult = document.getElementById('file-qr-result');
+
+        function setResult(label, result) {
+            label.textContent = result;
+            var timeStamp = new Date();
+            camQrResultTimestamp.textContent = timeStamp.toString();
+            label.style.color = 'teal';
+            clearTimeout(label.highlightTimeout);
+            label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
+            socket.emit("codeSubmit", { ID: sessionID, key: result, timestamp: timeStamp });
+        }
+
+        // ####### Web Cam Scanning #######
+        QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
+
+        const scanner = new QrScanner(video, result => setResult(camQrResult, result));
+        scanner.start();
+
+        document.getElementById('inversion-mode-select').addEventListener('change', event => {
+            scanner.setInversionMode(event.target.value);
+        });
+
+    </script>
+
+
+
+
+
+
+</body>
