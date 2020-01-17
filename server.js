@@ -1,4 +1,5 @@
-var https = require('https');
+var http = require('http');
+// var https = require('https');
 var url = require('url');
 var fs = require('fs');
 
@@ -14,13 +15,13 @@ var sessionKeys = {};
 var clientCount = 0;
 var pokeCount = 0;
 
-const serverOptions = {
-    key: fs.readFileSync("./cert/key.pem"), 
-    cert: fs.readFileSync("./cert/cert.pem")
-};
+// const serverOptions = {
+//     key: fs.readFileSync("./cert/key.pem"), 
+//     cert: fs.readFileSync("./cert/cert.pem")
+// };
 
 // Load html file
-var server = https.createServer(serverOptions, (req, res) => {
+var server = http.createServer(/*serverOptions, */(req, res) => {
     var q = url.parse(req.url);
 
     // If there is no path specified load index.html
@@ -76,7 +77,7 @@ io.sockets.on('connection', (socket) => {
             }
 
         } while (socket.exists)
-        console.log("Given sessionID: " + socket.sessionID);
+        console.log("[" + new Date() + "] " + "Given sessionID: " + socket.sessionID);
         socket.emit("acceptSessionID", socket.sessionID);
     });
 
@@ -97,7 +98,7 @@ io.sockets.on('connection', (socket) => {
             socket.emit("codeResponse", { sessionID: request, sessionKey: "error"});
             console.log("Probably value does not exist.");
         }
-        console.log(request + " : " + sessionKeys[request]);
+        console.log("[" + new Date() + "] " + request + " : " + sessionKeys[request]);
     });
 
     // Poke functions
@@ -107,6 +108,6 @@ io.sockets.on('connection', (socket) => {
     });
 });
 
+const PORT = process.env.PORT || 8080;
 
-
-server.listen(8080);
+server.listen(PORT);

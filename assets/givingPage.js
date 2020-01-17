@@ -1,4 +1,4 @@
-var socket = io.connect("https://localhost:8080");
+var socket = io.connect("https://qr-cottendance-265413.appspot.com/");
 var sessionID = 0;
 var keyExists = false;
 
