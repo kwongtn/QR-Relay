@@ -15,7 +15,14 @@ var sessionKeys = {};
 var clientCount = 0;
 var pokeCount = 0;
 
+/** How long each key should retain until considered inactive to be removed at next connection.
+ */
 const timeOut = 1.8e6;
+
+/** Multiplier to be used to generate IDs. If too many are used it will be multiplied by 10.
+*/
+var idMultiplier = 10000;
+
 // const serverOptions = {
 //     key: fs.readFileSync("./cert/key.pem"), 
 //     cert: fs.readFileSync("./cert/cert.pem")
@@ -74,12 +81,19 @@ io.sockets.on('connection', (socket) => {
     socket.on("getSessionID", () => {
         socket.sessionID = 0;
         socket.exists = true;
+        var attempts = 0;
 
         do {
-            socket.sessionID = /.*(?=\.)/.exec(Math.random() * 10000).toString();
+            socket.sessionID = /.*(?=\.)/.exec(Math.random() * idMultiplier).toString();
             if (sessionKeys.hasOwnProperty(socket.sessionID)) {
                 socket.exists = true;
                 logger("Code " + socket.sessionID + " taken. Generating another one.");
+                attempts++;
+
+                if(attempts > (idMultiplier / 10)){
+                    idMultiplier *= 10;
+                }
+
             } else {
                 sessionKeys[socket.sessionID] = { timeStamp: new Date().getTime() };
                 socket.exists = false;
