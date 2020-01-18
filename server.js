@@ -15,6 +15,7 @@ var sessionKeys = {};
 var clientCount = 0;
 var pokeCount = 0;
 
+const timeOut = 1.8e6;
 // const serverOptions = {
 //     key: fs.readFileSync("./cert/key.pem"), 
 //     cert: fs.readFileSync("./cert/cert.pem")
@@ -55,14 +56,17 @@ var io = require('socket.io').listen(server);
 // Alert console when connected
 io.sockets.on('connection', (socket) => {
     socket.emit("message", "You are connected. Welcome.");
-    console.log("[" + new Date().toISOString() + "] " +  ++clientCount + " connection attempts since server start.");
+    purge();
+    logger(++clientCount + " connection attempts since server start.");
 
     // To check if code is taken.
     socket.on("codeCheck", (check) => {
-        if(!sessionKeys.hasOwnProperty(check)){
-            sessionKeys[check] = {};
+        if (!sessionKeys.hasOwnProperty(check)) {
+            sessionKeys[check] = { timeStamp: new Date().getTime() };
             socket.emit("codeVerification", false);
-            console.log(sessionKeys);
+            logger(sessionKeys);
+        } else {
+            socket.emit("codeVerification", true);
         }
     });
 
@@ -75,29 +79,30 @@ io.sockets.on('connection', (socket) => {
             socket.sessionID = /.*(?=\.)/.exec(Math.random() * 10000).toString();
             if (sessionKeys.hasOwnProperty(socket.sessionID)) {
                 socket.exists = true;
+                logger("Code " + socket.sessionID + " taken. Generating another one.");
             } else {
-                sessionKeys[socket.sessionID] = {};
+                sessionKeys[socket.sessionID] = { timeStamp: new Date().getTime() };
                 socket.exists = false;
             }
 
         } while (socket.exists)
-        console.log("[" + new Date().toISOString() + "] " + "Given sessionID: " + socket.sessionID);
-        console.log(sessionKeys);
+        logger("Given sessionID: " + socket.sessionID);
         socket.emit("acceptSessionID", socket.sessionID);
     });
 
     // To receive and respond session keys.
     socket.on("codeSubmit", (submission) => {
-        console.log(submission);
-        if (!sessionKeys.hasOwnProperty(submission.ID)){
-            sessionKeys[submission.ID] = {};
+        logger("Received " + JSON.stringify(submission));
+        if (!sessionKeys.hasOwnProperty(submission.ID)) {
+            sessionKeys[submission.ID] = { timeStamp: new Date().getTime() };
         }
-        console.log(sessionKeys[submission.ID]);
+
+        // Writes the value and timestamp of the received key
         sessionKeys[submission.ID].val = submission.key;
+        sessionKeys[submission.ID].timeStamp = new Date().getTime();
+
         socket.broadcast.emit("codeResponse", { sessionID: submission.ID.toString(), sessionKey: submission.key.toString() });
-        // TODO: KIV
         socket.emit("keyResponse", submission.key);
-        console.log(sessionKeys); 
     });
 
     // To check and respond session keys to requester.
@@ -107,23 +112,41 @@ io.sockets.on('connection', (socket) => {
             console.log(sessionKeys[request].val);
             if (JSON.stringify(sessionKeys[request].val).toString() === "{}") {
                 socket.emit("codeResponse", { sessionID: request, sessionKey: "error" });
-                console.log("Probably value does not exist.");
+                logger("Value does not exist for " + request);
             } else {
                 socket.emit("codeResponse", { sessionID: request.toString(), sessionKey: sessionKeys[request].val });
-                console.log("[" + new Date().toISOString() + "] " + " : " + sessionKeys[request]);
+                logger(request + " : " + sessionKeys[request]);
             }
         } catch (err) {
             socket.emit("codeResponse", { sessionID: request, sessionKey: "error" });
-            console.log("[" + new Date().toISOString() + "] " + request + " : " + err.message);
+            logger(request + " : " + err.message);
         }
     });
 
     // Poke functions
     socket.on("pokeQuery", (response) => {
         socket.emit("pokeResponse", response);
-        console.log("[" + new Date().toISOString() + "] " + "Poke " + ++pokeCount + " from " + response);
+        logger("Poke " + ++pokeCount + " from " + response);
     });
 });
+
+function purge() {
+    var currTime = new Date().getTime();
+    var purgeCount = 0;
+    for (var IDs in sessionKeys) {
+        if (currTime - sessionKeys[IDs].timeStamp >= timeOut) {
+            delete sessionKeys[IDs];
+            purgeCount++;
+        }
+    }
+    if (purgeCount > 0){
+        logger("Purged " + purgeCount + " values in " + (currTime - new Date().getTime()) + " ms");
+    }
+}
+
+function logger(message){
+    console.log("[" + new Date().toISOString() + "] " + message);
+}
 
 const PORT = process.env.PORT || 8080;
 
