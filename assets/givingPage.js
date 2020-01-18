@@ -28,6 +28,7 @@ socket.on("codeVerification", (exists) => {
     } else if (!exists) {
         document.getElementById("sendingKey").style.display = "block";
         document.getElementById("keyExist").style.display = "none";
+        sessionID = document.getElementById("sessionInput").value;
         keyExist = false;
     }
 });
@@ -36,12 +37,10 @@ socket.on("codeVerification", (exists) => {
 function sendKey() {
     socket.emit("codeSubmit", { ID: sessionID, key: document.getElementById("sendingKey").value.toString() });
     document.getElementById("sentCode").innerHTML = document.getElementById("sendingKey").value;
-    console.log(document.getElementById("sendingKey").value.toString());
 }
 
 function querySession() {
     sessionID = document.getElementById("sessionInput").value;
-    console.log(sessionID);
     document.getElementById("sessionID").innerHTML = "Your chosen sessionID is: " + sessionID;
     socket.emit("codeCheck", sessionID.toString());
 };

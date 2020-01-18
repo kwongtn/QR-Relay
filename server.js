@@ -55,11 +55,15 @@ var io = require('socket.io').listen(server);
 // Alert console when connected
 io.sockets.on('connection', (socket) => {
     socket.emit("message", "You are connected. Welcome.");
-    console.log("[" + new Date() + "] " + ++clientCount + " connection attempts since server start.");
+    console.log("[" + new Date().toISOString() + "] " +  ++clientCount + " connection attempts since server start.");
 
     // To check if code is taken.
     socket.on("codeCheck", (check) => {
-        socket.emit("codeVerification", sessionKeys.hasOwnProperty(check));
+        if(!sessionKeys.hasOwnProperty(check)){
+            sessionKeys[check] = {};
+            socket.emit("codeVerification", false);
+            console.log(sessionKeys);
+        }
     });
 
     // Server generates a sessionID and responses
@@ -72,40 +76,52 @@ io.sockets.on('connection', (socket) => {
             if (sessionKeys.hasOwnProperty(socket.sessionID)) {
                 socket.exists = true;
             } else {
-                sessionKeys[socket.sessionID] = "";
+                sessionKeys[socket.sessionID] = {};
                 socket.exists = false;
             }
 
         } while (socket.exists)
-        console.log("[" + new Date() + "] " + "Given sessionID: " + socket.sessionID);
+        console.log("[" + new Date().toISOString() + "] " + "Given sessionID: " + socket.sessionID);
+        console.log(sessionKeys);
         socket.emit("acceptSessionID", socket.sessionID);
     });
 
     // To receive and respond session keys.
     socket.on("codeSubmit", (submission) => {
-        sessionKeys[submission.ID.toString()] = submission.key.toString();
-        socket.broadcast.emit("codeResponse", {sessionID: submission.ID.toString(), sessionKey: submission.key.toString() });
-        socket.emit("keyResponse", submission.key);
         console.log(submission);
-        console.log(sessionKeys);
+        if (!sessionKeys.hasOwnProperty(submission.ID)){
+            sessionKeys[submission.ID] = {};
+        }
+        console.log(sessionKeys[submission.ID]);
+        sessionKeys[submission.ID].val = submission.key;
+        socket.broadcast.emit("codeResponse", { sessionID: submission.ID.toString(), sessionKey: submission.key.toString() });
+        // TODO: KIV
+        socket.emit("keyResponse", submission.key);
+        console.log(sessionKeys); 
     });
 
     // To check and respond session keys to requester.
     socket.on("codeQuery", (request) => {
-        console.log(sessionKeys);
+        // console.log(sessionKeys);
         try {
-            socket.emit("codeResponse", { sessionID: request.toString(), sessionKey: sessionKeys[request].toString() });
+            console.log(sessionKeys[request].val);
+            if (JSON.stringify(sessionKeys[request].val).toString() === "{}") {
+                socket.emit("codeResponse", { sessionID: request, sessionKey: "error" });
+                console.log("Probably value does not exist.");
+            } else {
+                socket.emit("codeResponse", { sessionID: request.toString(), sessionKey: sessionKeys[request].val });
+                console.log("[" + new Date().toISOString() + "] " + " : " + sessionKeys[request]);
+            }
         } catch (err) {
-            socket.emit("codeResponse", { sessionID: request, sessionKey: "error"});
-            console.log("Probably value does not exist.");
+            socket.emit("codeResponse", { sessionID: request, sessionKey: "error" });
+            console.log("[" + new Date().toISOString() + "] " + request + " : " + err.message);
         }
-        console.log("[" + new Date() + "] " + request + " : " + sessionKeys[request]);
     });
 
     // Poke functions
     socket.on("pokeQuery", (response) => {
         socket.emit("pokeResponse", response);
-        console.log("Poke " + ++pokeCount + " from " + response);
+        console.log("[" + new Date().toISOString() + "] " + "Poke " + ++pokeCount + " from " + response);
     });
 });
 
