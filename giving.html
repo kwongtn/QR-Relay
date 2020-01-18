@@ -22,7 +22,8 @@
     <input type="text" placeholder="Key to send" id="sendingKey" onchange=sendKey() /><br>
     <b>Sent code: </b><span id="sentCode">None</span>
 
-    <p><input type="button" value="Tap / Click here to test if you are still connected." id="poke" onclick=pokeFunction() /></p>
+    <p><input type="button" value="Tap / Click here to test if you are still connected." id="poke"
+            onclick=pokeFunction() /></p>
     <div id="test"></div>
 
     <hr>
@@ -63,6 +64,8 @@
         const camQrResultTimestamp = document.getElementById('cam-qr-result-timestamp');
         const fileSelector = document.getElementById('file-selector');
         const fileQrResult = document.getElementById('file-qr-result');
+        var currentKey = "";
+
 
         function setResult(label, result) {
             label.textContent = result;
@@ -71,7 +74,14 @@
             label.style.color = 'teal';
             clearTimeout(label.highlightTimeout);
             label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
-            socket.emit("codeSubmit", { ID: sessionID, key: result, timestamp: timeStamp });
+            console.log({ ID: sessionID, key: result.toString(), timestamp: timeStamp });
+            if (result === currentKey){
+
+            } else {
+                socket.emit("codeSubmit", { ID: sessionID, key: result.toString(), timestamp: timeStamp });
+                currentKey = result.toString();
+                console.log("Sent " + { ID: sessionID, key: result.toString(), timestamp: timeStamp });
+            }
         }
 
         // ####### Web Cam Scanning #######
