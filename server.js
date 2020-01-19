@@ -23,6 +23,11 @@ const timeOut = 1.8e6;
 */
 var idMultiplier = 10000;
 
+/**
+ * Time in miliseconds on the time of last purge operation.
+ */
+var lastPurge = 0;
+
 // const serverOptions = {
 //     key: fs.readFileSync("./cert/key.pem"), 
 //     cert: fs.readFileSync("./cert/cert.pem")
@@ -63,7 +68,12 @@ var io = require('socket.io').listen(server);
 // Alert console when connected
 io.sockets.on('connection', (socket) => {
     socket.emit("message", "You are connected. Welcome.");
-    purge();
+
+    // Only purge when the list has not been purge for the last (timeout/3) minutes
+    if ((new Date().getTime() - lastPurge) > (timeOut / 3)){
+        purge();
+    }
+
     logger(++clientCount + " connection attempts since server start.");
 
     // To check if code is taken.
@@ -155,6 +165,7 @@ function purge() {
     }
     if (purgeCount > 0){
         logger("Purged " + purgeCount + " values in " + (currTime - new Date().getTime()) + " ms");
+        lastPurge = new Date().getTime();
     }
 }
 
