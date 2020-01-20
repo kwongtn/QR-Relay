@@ -3,6 +3,17 @@
 <head>
     <meta charset="utf-8" />
     <title>QrRelay beta - Receiving</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CC3LK8SQE9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-CC3LK8SQE9');
+    </script>
+    
 </head>
 
 <body>
@@ -13,7 +24,7 @@
     <div id="sessionID"></div>
     <b>Received code: </b><span id="receivedCode"></span><br>
     <b>Last received: </b><span id="receivedTime"></span><br>
-    
+
     <input type="text" placeholder="Enter sessionID" id="sessionInput" onchange=querySession() />
 
     <p><input type="button" value="Tap / Click here to test if you are still connected." id="poke" onclick=pokeFunction() /></p>
