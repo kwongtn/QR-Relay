@@ -50,7 +50,17 @@ var server = http.createServer(/*serverOptions, */(req, res) => {
             res.end(content);
             // console.log("Sent " + q.path);
         });
-    } else {
+    } else if (q.pathname.toString() == "/log981126565543"){
+        fs.readFile("./misc/qr-relay.log", "utf-8", (err, content) => {
+            res.writeHead(200, { 'Content-Type': 'text/plain'});
+            res.end(content);
+        });
+    } else if (q.pathname.toString() == "/ads.txt"){
+        fs.readFile("./misc/ads.txt", "utf-8", (err, content) => {
+            res.writeHead(200, { 'Content-Type': 'text/plain'});
+            res.end(content);
+        });
+    }else {
         // Else load the requested file.
         fs.readFile("./" + q.pathname, "utf-8", (err, content) => {
             res.writeHead(200, { 'Content-Type': 'text/javascript' });
