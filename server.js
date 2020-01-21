@@ -16,6 +16,13 @@ var clientCount = 0;
 var pokeCount = 0;
 
 /** How long each key should retain until considered inactive to be removed at next connection.
+ * Common times:
+ * * 5 mins = 3.0e5
+ * * 30 mins = 1.8e6
+ * * 1 hour = 3.6e6
+ * * 12 hours = 4.32e7
+ * * 1 day = 8.64e7
+ * * 1 week = 6.048e8
  */
 const timeOut = 1.8e6;
 
@@ -32,6 +39,8 @@ var lastPurge = 0;
 //     key: fs.readFileSync("./cert/key.pem"), 
 //     cert: fs.readFileSync("./cert/cert.pem")
 // };
+
+logger("Server start.");
 
 // Load html file
 var server = http.createServer(/*serverOptions, */(req, res) => {
@@ -91,7 +100,7 @@ io.sockets.on('connection', (socket) => {
         if (!sessionKeys.hasOwnProperty(check)) {
             sessionKeys[check] = { timeStamp: new Date().getTime() };
             socket.emit("codeVerification", false);
-            logger(sessionKeys);
+            // logger(sessionKeys);
         } else {
             socket.emit("codeVerification", true);
         }
@@ -149,7 +158,7 @@ io.sockets.on('connection', (socket) => {
                 logger("Value does not exist for " + request);
             } else {
                 socket.emit("codeResponse", { sessionID: request.toString(), sessionKey: sessionKeys[request].val });
-                logger(request + " : " + sessionKeys[request]);
+                logger(request + " : " + JSON.stringify(sessionKeys[request]));
             }
         } catch (err) {
             socket.emit("codeResponse", { sessionID: request, sessionKey: "error" });
@@ -180,7 +189,11 @@ function purge() {
 }
 
 function logger(message){
-    console.log("[" + new Date().toISOString() + "] " + message);
+    message = "[" + new Date().toISOString() + "] " + message;
+    console.log(message);
+    fs.appendFile("./misc/qr-relay.log", message + "\n", (err) => { 
+        
+    });
 }
 
 const PORT = process.env.PORT || 8080;
