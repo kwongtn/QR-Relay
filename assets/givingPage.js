@@ -3,12 +3,13 @@ var sessionID = 0;
 var keyExists = false;
 
 document.getElementById("jsCheck").style.display = "none";
+resizeFunction();
 
 // Get session ID from server.
 socket.emit("getSessionID", true);
 socket.on("acceptSessionID", (receivedID) => {
     sessionID = receivedID;
-    document.getElementById("sessionID").innerHTML = "Your given sessionID is: " + sessionID;
+    document.getElementById("sessionID").innerHTML = "Your given sessionID is: <b>" + sessionID + "</b>";
 });
 
 socket.on("message", (message) => {

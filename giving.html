@@ -14,15 +14,23 @@
         gtag('config', 'G-CC3LK8SQE9');
     </script>
 
+    <script type="text/javascript">
+    function resizeFunction(){
+        console.log("Resize function trigerred.");
+        document.getElementById("qr-video").width = window.innerWidth;
+        document.getElementById("qr-video").height = window.innerWidth;
+    }
+    </script>
+
 </head>
 
-<body>
+<body onresize="resizeFunction()">
     <h1>QrRelay beta : The Giving End</h1>
     <p id="jsCheck">For this to work correctly, please enable javascript in your browser.</p>
     <span id="testConnection">You are not connected. Probably something is wrong with your connection.</span><br>
     <span id="sessionID"></span>
 
-    <p>Enter sessionID, else a random id (shown above) will be used.<br>
+    <p>[Optional] Enter sessionID, else a random id (shown above) will be used. 
         <input type="text" placeholder="sessionID" id="sessionInput" onchange=querySession() /></p>
     <div id="keyExist" style="display: none">ID exists. Please choose another ID.</div>
 
@@ -44,7 +52,7 @@
         <br>
         <b>Last detected at: </b><span id="cam-qr-result-timestamp"></span>
         <br>
-        <video muted="" playsinline="" id="qr-video" width="100%"></video>
+        <video muted="" playsinline="" id="qr-video"></video>
     </div>
     <div>
         <b>Scanning type: </b>
