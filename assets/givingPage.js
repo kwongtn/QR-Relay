@@ -9,7 +9,7 @@ resizeFunction();
 socket.emit("getSessionID", true);
 socket.on("acceptSessionID", (receivedID) => {
     sessionID = receivedID;
-    document.getElementById("sessionID").innerHTML = "Your given sessionID is: <b>" + sessionID + "</b>";
+    document.getElementById("sessionID").innerHTML = "Your given sessionID is: <b>" + sessionID + "</b>, give this to your friend.";
 });
 
 socket.on("message", (message) => {

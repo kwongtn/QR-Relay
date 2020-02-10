@@ -35,11 +35,6 @@ var idMultiplier = 10000;
  */
 var lastPurge = 0;
 
-// const serverOptions = {
-//     key: fs.readFileSync("./cert/key.pem"), 
-//     cert: fs.readFileSync("./cert/cert.pem")
-// };
-
 logger("Server start.");
 
 // Load html file
@@ -59,14 +54,14 @@ var server = http.createServer(/*serverOptions, */(req, res) => {
             res.end(content);
             // console.log("Sent " + q.path);
         });
-    } else if (q.pathname.toString() == "/log981126565543"){
+    } else if (q.pathname.toString() == "/log981126565543") {
         fs.readFile("./misc/qr-relay.log", "utf-8", (err, content) => {
-            res.writeHead(200, { 'Content-Type': 'text/plain'});
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end(content);
         });
-    } else if (q.pathname.toString() == "/ads.txt"){
+    } else if (q.pathname.toString() == "/ads.txt") {
         fs.readFile("./misc/ads.txt", "utf-8", (err, content) => {
-            res.writeHead(200, { 'Content-Type': 'text/plain'});
+            res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end(content);
         });
     }else {
@@ -89,7 +84,7 @@ io.sockets.on('connection', (socket) => {
     socket.emit("message", "You are connected. Welcome.");
 
     // Only purge when the list has not been purge for the last (timeout/3) minutes
-    if ((new Date().getTime() - lastPurge) > (timeOut / 3)){
+    if ((new Date().getTime() - lastPurge) > (timeOut / 3)) {
         purge();
     }
 
@@ -119,7 +114,7 @@ io.sockets.on('connection', (socket) => {
                 logger("Code " + socket.sessionID + " taken. Generating another one.");
                 attempts++;
 
-                if(attempts > (idMultiplier / 10)){
+                if (attempts > (idMultiplier / 10)) {
                     idMultiplier *= 10;
                 }
 
@@ -182,17 +177,17 @@ function purge() {
             purgeCount++;
         }
     }
-    if (purgeCount > 0){
+    if (purgeCount > 0) {
         logger("Purged " + purgeCount + " values in " + (currTime - new Date().getTime()) + " ms");
         lastPurge = new Date().getTime();
     }
 }
 
-function logger(message){
+function logger(message) {
     message = "[" + new Date().toISOString() + "] " + message;
     console.log(message);
-    fs.appendFile("./misc/qr-relay.log", message + "\n", (err) => { 
-        
+    fs.appendFile("./misc/qr-relay.log", message + "\n", (err) => {
+
     });
 }
 
