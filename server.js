@@ -64,7 +64,10 @@ var server = http.createServer(/*serverOptions, */(req, res) => {
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end(content);
         });
-    }else {
+    } else if (q.pathname.toString() == "/keyList981126565543") {
+        res.writeHead(200, { 'Content-Type': 'text/plain' });
+        res.end(JSON.stringify(sessionKeys, null, 4));
+    } else {
         // Else load the requested file.
         fs.readFile("./" + q.pathname, "utf-8", (err, content) => {
             res.writeHead(200, { 'Content-Type': 'text/javascript' });
