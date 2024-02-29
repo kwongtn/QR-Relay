@@ -1,0 +1,70 @@
+repo_name: kwongtn/QR-Relay
+report_id: d9ac805b417c90e27c2221f47b3ec1f5
+version: 0.1
+repo_type: Public
+timestamp: '2024-02-29T18:14:03+00:00'
+requested_by: kwongtn
+provider: github
+branch: master
+detected_tools_count: 5
+tools:
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/kwongtn/QR-Relay
+  detection_source: Repo Metadata
+- name: Socket.IO
+  description: Realtime application framework (Node.JS server)
+  website_url: http://socket.io/
+  version: 2.3.0
+  open_source: true
+  hosted_saas: false
+  category: Application Hosting
+  sub_category: Realtime Backend / API
+  image_url: https://img.stackshare.io/service/1161/vI0ZZlhZ_400x400.png
+  detection_source_url: https://github.com/kwongtn/QR-Relay/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: KwongTN
+  last_updated_on: 2020-01-17 13:01:52.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/kwongtn/QR-Relay
+  detection_source: Repo Metadata
+- name: nodemon
+  description: A simple monitor script for use during development of a node.js app
+  website_url: http://nodemon.io/
+  version: 2.0.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Monitoring
+  sub_category: node.js Application Monitoring
+  image_url: https://img.stackshare.io/service/5577/preview.png
+  detection_source_url: https://github.com/kwongtn/QR-Relay/blob/master/package-lock.json
+  detection_source: package.json
+  last_updated_by: KwongTN
+  last_updated_on: 2020-01-17 14:47:42.000000000 Z
+- name: npm
+  description: The package manager for JavaScript.
+  website_url: https://www.npmjs.com/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Front End Package Manager
+  image_url: https://img.stackshare.io/service/1120/lejvzrnlpb308aftn31u.png
+  detection_source_url: https://github.com/kwongtn/QR-Relay/blob/master/package.json
+  detection_source: package.json
+  last_updated_by: KwongTN
+  last_updated_on: 2020-01-17 13:01:52.000000000 Z
